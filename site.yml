@@ -1,0 +1,43 @@
+---
+#
+# playbook: ansible-sbt
+# notes: scala playbook
+# depends:
+#   - ansible-java
+#   * at least 512mb free to run SBT
+#
+
+- hosts: all
+  sudo: True
+  tasks:
+  vars:
+    version: "0.1.0"
+    sbt_version: "0.13.1"
+    sbt_archive_name: "sbt"
+    sbt_archive_file: "{{sbt_archive_name}}.tgz"
+    sbt_download_url: "http://repo.scala-sbt.org/scalasbt/sbt-native-packages/org/scala-sbt/sbt/{{sbt_version}}/{{sbt_archive_file}}"
+
+    lib_path: "/usr/share/sbt"
+    lib_path_target: "{{lib_path}}/{{sbt_version}}"
+    link_target: "/usr/bin"
+
+  tasks:
+    - name: Create lib dir
+      file: path={{lib_path}} state=directory
+
+    - name: Clean existing version {{sbt_version}} if it exists
+      file: path={{lib_path_target}} state=absent
+
+    - name: Download sbt v{{sbt_version}}
+      get_url: url={{sbt_download_url}} 
+        dest=/tmp/{{sbt_archive_file}}
+        force=no
+
+    - name: Unpack sbt
+      command: tar -xvf {{sbt_archive_file}} chdir=/tmp/
+
+    - name: Move (by force) Sbt to lib
+      command: mv /tmp/{{sbt_archive_name}} {{lib_path_target}} chdir=/tmp/
+
+    - name: Link sbt
+      command: sudo ln -sf {{lib_path_target}}/bin/sbt {{link_target}}
