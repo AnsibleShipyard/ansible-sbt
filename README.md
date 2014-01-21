@@ -1,5 +1,5 @@
 ansible-sbt
-==============
+===========
 
 SBT Playbook for Ansible
 
