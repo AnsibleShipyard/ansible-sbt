@@ -1,7 +1,7 @@
 ---
 #
 # playbook: ansible-sbt
-# notes: scala playbook
+# notes: sbt playbook
 # depends:
 #   - ansible-java
 #   * at least 512mb free to run SBT
