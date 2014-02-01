@@ -96,12 +96,16 @@ galaxy_info:
   #- database
   #- database:nosql
   #- database:sql
-  - development
+  #- development
   #- monitoring
   #- networking
   #- packaging
   #- system
   #- web
+  #- platform
+  #- platform:framework
+  - runtime
+  - runtime:tool
 dependencies:
   - ansible-java
   - ansible-sbt
