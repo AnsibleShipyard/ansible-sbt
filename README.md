@@ -1,7 +1,7 @@
 ansible-sbt
 ===========
 
-[![Build Status](https://travis-ci.org/AnsibleShipyard/ansible-sbt.svg?branch=master)](https://travis-ci.org/AnsibleShipyard/ansible-sbty)
+[![Build Status](https://travis-ci.org/AnsibleShipyard/ansible-sbt.svg?branch=master)](https://travis-ci.org/AnsibleShipyard/ansible-sbt)
 
 
 ## Usage
