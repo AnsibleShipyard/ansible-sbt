@@ -6,7 +6,7 @@ ansible-sbt
 
 ## Usage
 
-docker pull [ansibleshipyard/ansible-sbt](https://registry.hub.docker.com/u/ansibleshipyard/ansible-scala/)
+docker pull [ansibleshipyard/ansible-sbt](https://registry.hub.docker.com/u/ansibleshipyard/ansible-sbt/)
 
 
 ## Info
