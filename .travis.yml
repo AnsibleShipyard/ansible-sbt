@@ -21,5 +21,4 @@ script:
 
   - "ansible-playbook -i ci/inventory ci/playbook.yml --connection=local --sudo -vvvv"
 
-  # Run java version
-  - "java -version"
+  - "sbt -version"
