@@ -1,0 +1,13 @@
+---
+
+- hosts: localhost
+  connection: local
+  sudo: yes
+
+  tasks:
+    - name: Check sbt
+      command: "which sbt"
+      register: sbt_version
+
+    - debug: 
+        msg: "sbt was installed to {{sbt_version.stdout}}"
