@@ -5,9 +5,10 @@
 # image:    ansible-sbt
 # tag:      latest
 # name:     ansibleshipyard/ansible-sbt
-# version:  v0.2.0
+# version:  v0.2.1
 # repo:     https://github.com/AnsibleShipyard/ansible-sbt
 # how-to:   docker build --force-rm -t ansibleshipyard/ansible-sbt .
+# debug:    docker run -t -i ansibleshipyard/ansible-sbt bash
 # requires: ansibleshipyard/ansible-scala
 # authors:  github:@jasongiedymin,
 #           github:
@@ -29,3 +30,7 @@ ADD ./ci $WORKDIR/ci
 
 # -----> Execute
 RUN ansible-playbook -i $WORKDIR/ci/inventory $WORKDIR/ci/playbook.yml -c local -vvvv
+
+# -----> Cleanup
+WORKDIR /
+RUN rm -R /tmp/build
