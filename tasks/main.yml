@@ -56,6 +56,9 @@
     - name: Validate installed sbt version
       command: "'{{ sbt_link_target }}' -no-colors sbtVersion"
       register: sbt_version_validation
+      retries: 5
+      delay: 10
+      until: sbt_version_validation is not failed
 
     - set_fact:
         finally_installed_sbt_version: "{{ sbt_version_validation.stdout | regex_search('(?<= )[0-9]+[.][0-9]+[.][0-9]+$') }}"
