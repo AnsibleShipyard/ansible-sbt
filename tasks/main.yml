@@ -2,15 +2,73 @@
 - name: Create /opt/src
   file: path=/opt/src state=directory recurse=yes
 
-- name: Create lib dir
-  file: path={{sbt_lib_path_target}} state=directory recurse=yes
+- name: Check installed sbt version
+  command: "'{{ sbt_link_target }}' -no-colors sbtVersion"
+  ignore_errors: yes
+  args:
+    strip_empty_ends: yes
+  register: sbt_version_check_result
 
-- name: Download sbt v{{sbt_version}}
-  get_url: url={{sbt_download_url}} 
-    dest=/opt/src/{{sbt_archive_file}}
+- set_fact:
+    installed_sbt_version: ""
 
-- name: Unpack sbt
-  unarchive: src=/opt/src/{{sbt_archive_file}} dest={{sbt_lib_path_target}} copy=no
+- debug:
+    msg: "sbt_version_check_result.stdout={{ sbt_version_check_result.stdout }}"
+  when: sbt_version_check_result.rc == 0
 
-- name: Link sbt
-  file: state=link src={{sbt_lib_path_target}}/sbt/bin/sbt dest={{sbt_link_target}}
+- set_fact:
+    installed_sbt_version: "{{ sbt_version_check_result.stdout | regex_search('(?<= )[0-9]+[.][0-9]+[.][0-9]+$') }}"
+  when: sbt_version_check_result.rc == 0
+
+- set_fact:
+    correct_version_of_sbt_already_installed: "{{ installed_sbt_version == sbt_version }}"
+
+- debug:
+    msg:
+      - "installed_sbt_version={{ installed_sbt_version }}"
+      - "sbt version we want to install: {{ sbt_version }}"
+      - "correct_version_of_sbt_already_installed={{ correct_version_of_sbt_already_installed }}"
+
+- block:
+    - name: Create lib dir
+      file:
+        path: "{{sbt_lib_path_target}}"
+        state: directory
+        recurse: yes
+
+    - name: Download sbt v{{sbt_version}}
+      get_url:
+        url: "{{sbt_download_url}} "
+        dest: "/opt/src/{{sbt_archive_file}}"
+        checksum: "{{ sbt_archive_checksum }}"
+
+    - name: Unpack sbt
+      unarchive:
+        src: "/opt/src/{{sbt_archive_file}}"
+        dest: "{{sbt_lib_path_target}}"
+        copy: no
+
+    - name: Link sbt
+      file:
+        state: link
+        src: "{{sbt_lib_path_target}}/sbt/bin/sbt"
+        dest: "{{sbt_link_target}}"
+
+    - name: Validate installed sbt version
+      command: "'{{ sbt_link_target }}' -no-colors sbtVersion"
+      register: sbt_version_validation
+      retries: 5
+      delay: 10
+      until: sbt_version_validation is not failed
+
+    - set_fact:
+        finally_installed_sbt_version: "{{ sbt_version_validation.stdout | regex_search('(?<= )[0-9]+[.][0-9]+[.][0-9]+$') }}"
+
+    - debug:
+        msg: "finally_installed_sbt_version={{ finally_installed_sbt_version }}"
+
+    - assert:
+        that:
+          - finally_installed_sbt_version == sbt_version
+
+  when: not correct_version_of_sbt_already_installed
