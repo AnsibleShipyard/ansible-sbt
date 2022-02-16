@@ -38,7 +38,7 @@
 
     - name: Download sbt v{{sbt_version}}
       get_url:
-        url: "{{sbt_download_url}} "
+        url: "{{sbt_download_url}}"
         dest: "/opt/src/{{sbt_archive_file}}"
         checksum: "{{ sbt_archive_checksum }}"
 
