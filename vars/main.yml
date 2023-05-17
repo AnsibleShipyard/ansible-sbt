@@ -1,6 +1,6 @@
 ---
 sbt_playbook_version: "0.2.0"
-sbt_version: "0.13.18"
+sbt_version: "1.8.2"
 sbt_archive_name: "sbt-{{sbt_version}}"
 sbt_archive_file: "{{sbt_archive_name}}.tgz"
 sbt_url_prefix: "https://github.com/sbt/sbt/releases/download"
